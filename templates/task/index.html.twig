@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Task index{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10 ml-md-auto">
+                <div class="">
+                    <div class="card bg-light mb-3 mt-5" style="width: 800px;">
+                        <div class="card-body">
+                            <h1 class="ui aligned header">Tasks</h1>
+                            {% for flashMessage in app.session.flashbag.get('notice') %}
+                                <div class="ui green icon message">
+                                    <i class="info circle icon"></i>
+                                    <div class="content">
+                                        <div class="header">The action was succesful!</div>
+                                        <p>{{ flashMessage }}</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            <div style="float:right;">
+                                <a href="{{ path('task_new') }}" title="Add task">
+                                    <button type="button" class="btn btn-outline-dark">New</button>
+                                </a>
+                            </div>
+                            <div class="bd-example">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">{{ knp_pagination_sortable(pagination, 'ID', 't.id') }}</th>
+                                        <th scope="col">{{ knp_pagination_sortable(pagination, 'Name', 'a.name') }}</th>
+                                        <th scope="col">{{ knp_pagination_sortable(pagination, 'Email', 'a.email') }}</th>
+                                        <th scope="col">{{ knp_pagination_sortable(pagination, 'Status', 't.status') }}</th>
+                                        <th scope="col">Description</th>
+                                        <th scope="col">Task</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for items in pagination %}
+                                        <tr>
+                                            <th scope="row">{{ items.id }}</th>
+                                            <td>{{ items.user.name ?? null }}</td>
+                                            <td>{{ items.user.email ?? null }}</td>
+                                            <td> {{ items.status }}</td>
+                                            <td> {{ items.description }}</td>
+                                            {% if items.checkbox == 1 %}
+                                                <td>Edited by admin</td>
+                                            {% endif %}
+                                            {% if items.checkbox == 0 %}
+                                                <td></td>
+                                            {% endif %}
+                                            <td>
+                                                {% if is_granted('ROLE_ADMIN') %}
+                                                    <a href="{{ path('task_edit', {id: items.id}) }}"
+                                                       title="Edit task">
+                                                        <button type="button" class="btn btn-outline-warning">Edit
+                                                        </button>
+                                                    </a>
+                                                    <a href="{{ path('task_delete', {id: items.id}) }}"
+                                                       title="Delete task">
+                                                        <button type="button" class="btn btn-outline-danger">Delete
+                                                        </button>
+                                                    </a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                                {{ knp_pagination_render(pagination) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
